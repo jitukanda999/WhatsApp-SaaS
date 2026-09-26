@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Owner Admin Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+    body { background: #f8fafc; color: #0f172a; padding: 14px; }
+    .box { max-width: 1050px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+    .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 14px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+    .top-head { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+    .status-dot { background: #dcfce7; color: #15803d; padding: 5px 12px; border-radius: 99px; font-size: 11px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; }
+    .dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; }
+    .webhook-box { border: 2px dashed #3b82f6; background: #fff; }
+    .grid-setup { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-top: 10px; }
+    .code-box { background: #f1f5f9; padding: 10px 12px; border-radius: 8px; font-size: 11px; }
+    .code-box label { font-size: 10px; font-weight: 800; color: #475569; display: block; margin-bottom: 2px; }
+    .code-box code { font-weight: 700; color: #0f172a; word-break: break-all; }
+    .grid-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+    .metric { border-radius: 12px; padding: 14px; background: #fff; border: 1px solid #e2e8f0; }
+    .m-title { font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; }
+    .m-num { font-size: 22px; font-weight: 900; margin: 4px 0; color: #0f172a; }
+    .m-tag { font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; display: inline-block; }
+    .tag-green { background: #dcfce7; color: #15803d; }
+    .tag-red { background: #fee2e2; color: #b91c1c; }
+    .tag-blue { background: #dbeafe; color: #1d4ed8; }
+    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 12px; }
+    th { background: #f8fafc; padding: 10px 12px; font-weight: 800; color: #475569; border-bottom: 1px solid #e2e8f0; }
+    td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
+    .btn-chat { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; font-weight: 700; font-size: 11px; padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+    .grid-export { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; }
+    .btn-exp { padding: 12px; border-radius: 10px; border: 1px solid #e2e8f0; background: #fff; font-weight: 800; cursor: pointer; text-align: left; font-size: 12px; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <div class="card top-head">
+    <div>
+      <h1 style="font-size: 18px; font-weight: 900;">🚀 Owner Admin & Live Analytics</h1>
+      <p style="font-size: 11px; color: #64748b; margin-top: 2px;">Shopify Webhook & WhatsApp Live Automation</p>
+    </div>
+    <div class="status-dot"><span class="dot"></span> Live Ready</div>
+  </div>
+
+  <div class="card webhook-box">
+    <span style="background: #2563eb; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px;">SHOPIFY WEBHOOK SETUP</span>
+    <div class="grid-setup">
+      <div class="code-box">
+        <label>ACTIVE WEBHOOK URL</label>
+        <code>https://whatsapp-saastools.vercel.app/api/webhook/orders</code>
+      </div>
+      <div class="code-box">
+        <label>SECRET TOKEN</label>
+        <code>21f251e2cdcef9534c0426feaa7ca29c</code>
+      </div>
+    </div>
+    <p style="font-size: 11px; color: #475569; margin-top: 8px;">
+      Shopify Settings ➔ Notifications ➔ Webhooks ➔ "Order creation" mein URL daalein.
+    </p>
+  </div>
+
+  <div class="grid-cards">
+    <div class="metric">
+      <div class="m-title">Total Sales</div>
+      <div class="m-num" id="statSales">₹0</div>
+      <span class="m-tag tag-green">Real Earnings</span>
+    </div>
+    <div class="metric">
+      <div class="m-title">Total Orders</div>
+      <div class="m-num" id="statOrders">0</div>
+      <span class="m-tag tag-blue">Total Count</span>
+    </div>
+    <div class="metric">
+      <div class="m-title">Confirmed</div>
+      <div class="m-num" id="statConfirmed" style="color: #15803d;">0</div>
+      <span class="m-tag tag-green">Delivering Safely</span>
+    </div>
+    <div class="metric">
+      <div class="m-title">Cancelled / Fake</div>
+      <div class="m-num" id="statCancelled" style="color: #b91c1c;">0</div>
+      <span class="m-tag tag-red">Saved ₹0 RTO</span>
+    </div>
+    <div class="metric">
+      <div class="m-title">Prepaid / UPI</div>
+      <div class="m-num" id="statPrepaid">0</div>
+      <span class="m-tag tag-blue">Zero Risk</span>
+    </div>
+  </div>
+
+  <div class="card" style="padding: 0; overflow: hidden;">
+    <div style="padding: 12px 14px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+      <h3 style="font-size: 13px; font-weight: 800;">📦 Orders & WhatsApp Tracker</h3>
+      <button onclick="addSimulatedOrder()" style="background:#10b981; color:#fff; border:none; padding:5px 10px; border-radius:6px; font-size:11px; font-weight:800; cursor:pointer;">+ Test 1 Order</button>
+    </div>
+    <div style="overflow-x: auto;">
+      <table>
+        <thead>
+          <tr>
+            <th>Order #</th>
+            <th>Customer & Phone</th>
+            <th>Amount</th>
+            <th>Payment</th>
+            <th>WhatsApp Status</th>
+            <th style="text-align: right;">Action</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr id="emptyRow">
+            <td colspan="6" style="text-align: center; padding: 30px; color: #64748b;">
+              Waiting for Shopify orders... Click "+ Test 1 Order" to test.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3 style="font-size: 13px; font-weight: 800; margin-bottom: 10px;">📥 1-Click Export Center</h3>
+    <div class="grid-export">
+      <button class="btn-exp" onclick="exportData('xlsx')">📊 Download Excel (.xlsx)</button>
+      <button class="btn-exp" onclick="exportData('csv')">📄 Download CSV</button>
+      <button class="btn-exp" onclick="window.print()">🖨️ Save as PDF</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let ordersList = [];
+  function addSimulatedOrder() {
+    const empty = document.getElementById('emptyRow');
+    if (empty) empty.remove();
+    const orderNum = '#' + (1001 + ordersList.length);
+    const names = ['Karan Malhotra', 'Sneha Kapoor', 'Vikas Gupta'];
+    const cName = names[Math.floor(Math.random() * names.length)];
+    const amt = [799, 1299, 1999][Math.floor(Math.random() * 3)];
+    const newOrder = { num: orderNum, name: cName, phone: '+91 98' + Math.floor(10000000 + Math.random() * 90000000), amount: amt, payment: 'COD', status: 'Confirmed' };
+    ordersList.unshift(newOrder);
+
+    const tbody = document.getElementById('tableBody');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-weight: 800; color: #2563eb;">${newOrder.num}</td>
+      <td><strong>${newOrder.name}</strong><br><span style="color:#64748b; font-size:10px;">${newOrder.phone}</span></td>
+      <td><strong>₹${newOrder.amount}</strong></td>
+      <td><span style="padding:2px 6px; border-radius:4px; font-size:10px; font-weight:800; background:#fef3c7; color:#b45309;">COD</span></td>
+      <td><span style="padding:2px 8px; border-radius:99px; font-size:10px; font-weight:800; background:#dcfce7; color:#15803d;">● Confirmed</span></td>
+      <td style="text-align: right;"><button class="btn-chat" onclick="alert('Sent: Address confirmation message.\\nCustomer: Confirmed delivery!')">View Chat</button></td>
+    `;
+    tbody.insertBefore(tr, tbody.firstChild);
+
+    document.getElementById('statSales').innerText = '₹' + ordersList.reduce((s, o) => s + o.amount, 0).toLocaleString();
+    document.getElementById('statOrders').innerText = ordersList.length;
+    document.getElementById('statConfirmed').innerText = ordersList.length;
+  }
+
+  function exportData(ext) {
+    if(!ordersList.length) { alert('No orders yet!'); return; }
+    let csv = "Order,Name,Phone,Amount,Status\\n";
+    ordersList.forEach(o => { csv += `"${o.num}","${o.name}","${o.phone}","${o.amount}","${o.status}"\\n`; });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = `Orders_Report.${ext === 'xlsx' ? 'xls' : 'csv'}`;
+    a.click();
+  }
+</script>
+</body>
+</html>
